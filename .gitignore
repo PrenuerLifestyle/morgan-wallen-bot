@@ -60,3 +60,28 @@ credentials/
 # Upload directories
 uploads/
 public/uploads/
+# Backup files
+*.backup
+*.backup.*
+*.bak
+*backup*
+*.old
+*.save
+*copy*
+
+# Backup directories
+backups/
+restore-safeguard-*/
+old-files-*/
+
+# Environment backups
+.env.backup*
+.env.bak
+
+# Log files
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp

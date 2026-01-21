@@ -12,7 +12,7 @@ const axios = require('axios');
 const cron = require('node-cron');
 const Queue = require('bull');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Initialize
 const bot = new Telegraf(process.env.BOT_TOKEN);

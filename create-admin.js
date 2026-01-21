@@ -3,7 +3,7 @@
 
 require('dotenv').config();
 const { Pool } = require('pg');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const readline = require('readline');
 
 const pool = new Pool({
@@ -59,8 +59,8 @@ async function createAdmin() {
     } else {
       // Insert new admin
       await pool.query(
-        `INSERT INTO admins (telegram_id, email, password_hash, role, permissions)
-         VALUES ($1, $2, $3, 'admin', '{"all": true}')`,
+        `INSERT INTO admins (telegram_id, email, password_hash, role)
+         VALUES ($1, $2, $3, 'admin')`,
         [telegramId, email, passwordHash]
       );
       
