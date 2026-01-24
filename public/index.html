@@ -1,1 +1,313 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Morgan Wallen Bot-Admin</title><script src="https://cdn.tailwindcss.com"></script><style>*{font-family:Arial,sans-serif;}.gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}</style></head><body class="bg-gray-50"><div id="loginScreen"class="min-h-screen gradient-bg flex items-center justify-center p-4"><div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md"><div class="text-center mb-8"><h1 class="text-3xl font-bold text-gray-800">Morgan Wallen Bot</h1><p class="text-gray-600 mt-2">Admin Dashboard</p></div><form onsubmit="login(event)"><div class="mb-4"><label class="block text-gray-700 text-sm font-semibold mb-2">Email</label><input type="text"id="username"class="w-full px-4 py-3 rounded-lg border"placeholder="admin"required></div><div class="mb-6"><label class="block text-gray-700 text-sm font-semibold mb-2">Password</label><input type="password"id="password"class="w-full px-4 py-3 rounded-lg border"placeholder="••••••••"required></div><button type="submit"class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg">Sign In</button></form><p class="text-center text-gray-600 text-sm mt-6">Demo: admin/admin123</p></div></div><div id="dashboard"class="hidden"><nav class="bg-white shadow-sm border-b"><div class="px-6 py-4 flex items-center justify-between"><div><h1 class="text-xl font-bold">Morgan Wallen Bot</h1><p class="text-xs text-gray-500">Admin Dashboard</p></div><button onclick="logout()"class="px-4 py-2 bg-gray-200 rounded-lg">Logout</button></div></nav><div class="p-8"><h2 class="text-2xl font-bold mb-6">Dashboard</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-white rounded-xl shadow p-6"><h3 class="text-gray-600 text-sm mb-2">Total Users</h3><p class="text-3xl font-bold">2,847</p></div><div class="bg-white rounded-xl shadow p-6"><h3 class="text-gray-600 text-sm mb-2">Bookings</h3><p class="text-3xl font-bold">156</p></div><div class="bg-white rounded-xl shadow p-6"><h3 class="text-gray-600 text-sm mb-2">Revenue</h3><p class="text-3xl font-bold">$48,392</p></div></div></div></div><script>function login(e){e.preventDefault();const u=document.getElementById('username').value;const p=document.getElementById('password').value;if(u==='admin'&&p==='admin123'){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');}else{alert('Invalid credentials. Try: admin/admin123');}}function logout(){document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('dashboard').classList.add('hidden');}</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morgan Wallen - Still The Problem Tour 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        
+        .hero-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 6rem;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a0000 0%, #000000 50%, #0a0a0a 100%);
+        }
+        
+        .tour-card {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tour-card:hover {
+            transform: translateY(-5px);
+            border-color: #dc2626;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+            transform: scale(1.05);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .hero-image {
+            background: url('https://aegwebprod.blob.core.windows.net/content/content_images/739/hdMBvhHJggdfZcyARibp48sItZo0srboASlFOVEX.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 600px;
+            position: relative;
+        }
+        
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent, #000);
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-red-600" style="font-family: 'Bebas Neue', cursive;">
+                    MORGAN WALLEN
+                </h1>
+                <div class="flex space-x-6">
+                    <a href="#tour" class="hover:text-red-600 transition">TOUR</a>
+                    <a href="#tickets" class="hover:text-red-600 transition">TICKETS</a>
+                    <a href="#bot" class="hover:text-red-600 transition">TELEGRAM BOT</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-image mt-16">
+        <div class="absolute inset-0 flex items-center justify-center flex-col text-center">
+            <h1 class="hero-title text-white animate-fade-in">
+                STILL THE PROBLEM
+            </h1>
+            <p class="text-3xl mt-4 text-red-500 animate-fade-in" style="animation-delay: 0.2s; font-family: 'Bebas Neue', cursive;">
+                TOUR 2026
+            </p>
+            <p class="text-xl mt-6 animate-fade-in" style="animation-delay: 0.4s;">
+                21 STADIUM SHOWS • 11 CITIES • APRIL - AUGUST 2026
+            </p>
+            <a href="#tickets" class="mt-8 btn-primary px-12 py-4 rounded-full text-xl font-bold animate-fade-in" style="animation-delay: 0.6s;">
+                GET TICKETS
+            </a>
+        </div>
+    </div>
+
+    <!-- Tour Dates Section -->
+    <section id="tour" class="max-w-7xl mx-auto px-4 py-20">
+        <h2 class="text-5xl font-bold text-center mb-12" style="font-family: 'Bebas Neue', cursive;">
+            TOUR DATES
+        </h2>
+        
+        <div class="grid gap-6" id="tourDates">
+            <!-- JavaScript will populate this -->
+        </div>
+    </section>
+
+    <!-- Telegram Bot Section -->
+    <section id="bot" class="bg-gradient-to-b from-gray-900 to-black py-20">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-6" style="font-family: 'Bebas Neue', cursive;">
+                OFFICIAL TELEGRAM BOT
+            </h2>
+            <p class="text-xl text-gray-300 mb-8">
+                Get exclusive access to tickets, VIP experiences, and direct booking with Morgan!
+             </p>
+            
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="text-4xl mb-4">🎫</div>
+                    <h3 class="text-xl font-bold mb-2">Priority Tickets</h3>
+                    <p class="text-gray-400">First access to tour tickets before public sale</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="text-4xl mb-4">📞</div>
+                    <h3 class="text-xl font-bold mb-2">Book Experiences</h3>
+                    <p class="text-gray-400">Video calls, meet & greets, and VIP packages</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="text-4xl mb-4">💎</div>
+                    <h3 class="text-xl font-bold mb-2">VIP Membership</h3>
+                    <p class="text-gray-400">Exclusive perks, discounts, and backstage access</p>
+                </div>
+            </div>
+            
+            <a href="https://t.me/MorganWallenAssistantBot " class="inline-block mt-12 btn-primary px-12 py-4 rounded-full text-xl font-bold">
+                START BOT NOW
+            </a>
+        </div>
+    </section>
+
+    <!-- Tickets Section -->
+    <section id="tickets" class="max-w-4xl mx-auto px-4 py-20">
+        <h2 class="text-5xl font-bold text-center mb-12" style="font-family: 'Bebas Neue', cursive;">
+            TICKET INFORMATION
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="tour-card p-8 rounded-lg">
+                <h3 class="text-2xl font-bold mb-4">General Admission</h3>
+                <p class="text-4xl font-bold text-red-500 mb-4">$79.99 - $99.99</p>
+                <ul class="space-y-2 text-gray-300">
+                    <li>✓ Stadium seating</li>
+                    <li>✓ Full show access</li>
+                    <li>✓ Special guest performances</li>
+                    <li>✓ Official merchandise access</li>
+                </ul>
+            </div>
+            
+            <div class="tour-card p-8 rounded-lg border-red-600">
+                <div class="bg-red-600 text-white px-3 py-1 rounded-full inline-block mb-4 text-sm">
+                    VIP EXPERIENCE
+                </div>
+                <h3 class="text-2xl font-bold mb-4">VIP Package</h3>
+                <p class="text-4xl font-bold text-red-500 mb-4">$269.99 - $349.99</p>
+                <ul class="space-y-2 text-gray-300">
+                    <li>✓ Premium seating</li>
+                    <li>✓ VIP entrance</li>
+                    <li>✓ Exclusive merchandise</li>
+                    <li>✓ Meet & greet opportunity</li>
+                    <li>✓ Pre-show lounge access</li>
+                    <li>✓ Commemorative laminate</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <p class="text-gray-400 mb-6">
+                A portion of every ticket sold benefits the Morgan Wallen Foundation
+            </p>
+            <a href="https://t.me/YOUR_BOT_USERNAME" class="btn-primary px-12 py-4 rounded-full text-xl font-bold inline-block">
+                BUY TICKETS VIA BOT
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold" style="font-family: 'Bebas Neue', cursive;">
+                        MORGAN WALLEN
+                    </h3>
+                    <p class="text-gray-500">Still The Problem Tour 2026</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition">Instagram</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Twitter</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Facebook</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Spotify</a>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-gray-600 text-sm">
+                <p>© 2026 AEG Presents. All rights reserved.</p>
+                <p class="mt-2">For accessibility assistance, call (888) 226-0076</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Real tour data
+        const tourDates = [
+            { date: '2026-04-10', city: 'Minneapolis', state: 'MN', venue: 'U.S. Bank Stadium', guests: 'Thomas Rhett, Gavin Adcock, Vincent Mason' },
+            { date: '2026-04-11', city: 'Minneapolis', state: 'MN', venue: 'U.S. Bank Stadium', guests: 'HARDY, Gavin Adcock, Vincent Mason' },
+            { date: '2026-04-18', city: 'Tuscaloosa', state: 'AL', venue: 'Saban Field at Bryant-Denny Stadium', guests: 'Ella Langley, Vincent Mason, Zach John King' },
+            { date: '2026-05-01', city: 'Las Vegas', state: 'NV', venue: 'Allegiant Stadium', guests: 'Brooks & Dunn, Gavin Adcock, Vincent Mason' },
+            { date: '2026-05-02', city: 'Las Vegas', state: 'NV', venue: 'Allegiant Stadium', guests: 'Brooks & Dunn, Gavin Adcock, Vincent Mason' },
+            { date: '2026-05-08', city: 'Indianapolis', state: 'IN', venue: 'Lucas Oil Stadium', guests: 'Thomas Rhett, Hudson Westbrook' },
+            { date: '2026-05-09', city: 'Indianapolis', state: 'IN', venue: 'Lucas Oil Stadium', guests: 'HARDY, Hudson Westbrook' },
+            { date: '2026-05-15', city: 'Gainesville', state: 'FL', venue: 'Ben Hill Griffin Stadium', guests: 'Ella Langley, Blake Whiten' },
+            { date: '2026-05-16', city: 'Gainesville', state: 'FL', venue: 'Ben Hill Griffin Stadium', guests: 'Brooks & Dunn, Blake Whiten' },
+            { date: '2026-05-29', city: 'Denver', state: 'CO', venue: 'Empower Field At Mile High', guests: 'Thomas Rhett, Gavin Adcock' },
+            { date: '2026-05-30', city: 'Denver', state: 'CO', venue: 'Empower Field At Mile High', guests: 'HARDY, Hudson Westbrook' },
+            { date: '2026-06-05', city: 'Pittsburgh', state: 'PA', venue: 'Acrisure Stadium', guests: 'Brooks & Dunn, Ella Langley' },
+            { date: '2026-06-06', city: 'Pittsburgh', state: 'PA', venue: 'Acrisure Stadium', guests: 'Thomas Rhett, Vincent Mason' },
+            { date: '2026-06-19', city: 'Chicago', state: 'IL', venue: 'Soldier Field', guests: 'Brooks & Dunn' },
+            { date: '2026-06-20', city: 'Chicago', state: 'IL', venue: 'Soldier Field', guests: 'HARDY, Ella Langley' },
+            { date: '2026-07-17', city: 'Baltimore', state: 'MD', venue: 'M&T Bank Stadium', guests: 'Brooks & Dunn, Ella Langley, Gavin Adcock, Jason Scott & The High Heat' },
+            { date: '2026-07-18', city: 'Baltimore', state: 'MD', venue: 'M&T Bank Stadium', guests: 'Brooks & Dunn, Ella Langley, Gavin Adcock, Jason Scott & The High Heat' },
+            { date: '2026-07-24', city: 'Ann Arbor', state: 'MI', venue: 'Michigan Stadium', guests: 'Thomas Rhett, HARDY, Hudson Westbrook, Blake Whiten' },
+            { date: '2026-07-25', city: 'Ann Arbor', state: 'MI', venue: 'Michigan Stadium', guests: 'Thomas Rhett, HARDY, Hudson Westbrook, Blake Whiten' },
+            { date: '2026-08-01', city: 'Philadelphia', state: 'PA', venue: 'Lincoln Financial Field', guests: 'Brooks & Dunn, Ella Langley' },
+            { date: '2026-08-02', city: 'Philadelphia', state: 'PA', venue: 'Lincoln Financial Field', guests: 'HARDY, Gavin Adcock' }
+        ];
+
+        // Render tour dates
+        const tourContainer = document.getElementById('tourDates');
+        
+        tourDates.forEach((show, index) => {
+            const date = new Date(show.date);
+            const formatted = date.toLocaleDateString('en-US', { 
+                weekday: 'short',
+                month: 'short', 
+                day: 'numeric'
+            });
+            
+            const card = document.createElement('div');
+            card.className = 'tour-card p-6 rounded-lg flex flex-col md:flex-row items-center justify-between animate-fade-in';
+            card.style.animationDelay = `${index * 0.05}s`;
+            
+            card.innerHTML = `
+                <div class="flex-1 mb-4 md:mb-0">
+                    <div class="text-red-500 font-bold mb-1">${formatted.toUpperCase()}</div>
+                    <div class="text-2xl font-bold mb-1">${show.city}, ${show.state}</div>
+                    <div class="text-gray-400">${show.venue}</div>
+                    <div class="text-sm text-gray-500 mt-2">w/ ${show.guests}</div>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="window.open('https://t.me/YOUR_BOT_USERNAME', '_blank')" 
+                            class="btn-primary px-8 py-3 rounded-full font-bold">
+                        BUY TICKETS
+                    </button>
+                </div>
+            `;
+            
+            tourContainer.appendChild(card);
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

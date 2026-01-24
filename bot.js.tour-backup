@@ -680,365 +680,39 @@ bot.hears('📍 Tour Dates', async (ctx) => {
 
 // Tour detail view
 bot.action(/tour_detail_(\d+)/, async (ctx) => {
-// Add this to your bot.js file - Real Tour Data Integration
-
-// Real "Still The Problem Tour 2026" dates
-const TOUR_DATES_2026 = [
-  {
-    date: '2026-04-10',
-    city: 'Minneapolis',
-    state: 'MN',
-    venue: 'U.S. Bank Stadium',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 65000,
-    specialGuests: 'Thomas Rhett, Gavin Adcock, Vincent Mason'
-  },
-  {
-    date: '2026-04-11',
-    city: 'Minneapolis',
-    state: 'MN',
-    venue: 'U.S. Bank Stadium',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 65000,
-    specialGuests: 'HARDY, Gavin Adcock, Vincent Mason'
-  },
-  {
-    date: '2026-04-18',
-    city: 'Tuscaloosa',
-    state: 'AL',
-    venue: 'Saban Field at Bryant-Denny Stadium',
-    price: 79.99,
-    vipPrice: 279.99,
-    ticketsAvailable: 100000,
-    specialGuests: 'Ella Langley, Vincent Mason, Zach John King'
-  },
-  {
-    date: '2026-05-01',
-    city: 'Las Vegas',
-    state: 'NV',
-    venue: 'Allegiant Stadium',
-    price: 99.99,
-    vipPrice: 349.99,
-    ticketsAvailable: 65000,
-    specialGuests: 'Brooks & Dunn, Gavin Adcock, Vincent Mason'
-  },
-  {
-    date: '2026-05-02',
-    city: 'Las Vegas',
-    state: 'NV',
-    venue: 'Allegiant Stadium',
-    price: 99.99,
-    vipPrice: 349.99,
-    ticketsAvailable: 65000,
-    specialGuests: 'Brooks & Dunn, Gavin Adcock, Vincent Mason'
-  },
-  {
-    date: '2026-05-08',
-    city: 'Indianapolis',
-    state: 'IN',
-    venue: 'Lucas Oil Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 70000,
-    specialGuests: 'Thomas Rhett, Hudson Westbrook'
-  },
-  {
-    date: '2026-05-09',
-    city: 'Indianapolis',
-    state: 'IN',
-    venue: 'Lucas Oil Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 70000,
-    specialGuests: 'HARDY, Hudson Westbrook'
-  },
-  {
-    date: '2026-05-15',
-    city: 'Gainesville',
-    state: 'FL',
-    venue: 'Ben Hill Griffin Stadium',
-    price: 79.99,
-    vipPrice: 269.99,
-    ticketsAvailable: 88000,
-    specialGuests: 'Ella Langley, Blake Whiten'
-  },
-  {
-    date: '2026-05-16',
-    city: 'Gainesville',
-    state: 'FL',
-    venue: 'Ben Hill Griffin Stadium',
-    price: 79.99,
-    vipPrice: 269.99,
-    ticketsAvailable: 88000,
-    specialGuests: 'Brooks & Dunn, Blake Whiten'
-  },
-  {
-    date: '2026-05-29',
-    city: 'Denver',
-    state: 'CO',
-    venue: 'Empower Field At Mile High',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 76000,
-    specialGuests: 'Thomas Rhett, Gavin Adcock'
-  },
-  {
-    date: '2026-05-30',
-    city: 'Denver',
-    state: 'CO',
-    venue: 'Empower Field At Mile High',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 76000,
-    specialGuests: 'HARDY, Hudson Westbrook'
-  },
-  {
-    date: '2026-06-05',
-    city: 'Pittsburgh',
-    state: 'PA',
-    venue: 'Acrisure Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 68000,
-    specialGuests: 'Brooks & Dunn, Ella Langley'
-  },
-  {
-    date: '2026-06-06',
-    city: 'Pittsburgh',
-    state: 'PA',
-    venue: 'Acrisure Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 68000,
-    specialGuests: 'Thomas Rhett, Vincent Mason'
-  },
-  {
-    date: '2026-06-19',
-    city: 'Chicago',
-    state: 'IL',
-    venue: 'Soldier Field',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 61500,
-    specialGuests: 'Brooks & Dunn'
-  },
-  {
-    date: '2026-06-20',
-    city: 'Chicago',
-    state: 'IL',
-    venue: 'Soldier Field',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 61500,
-    specialGuests: 'HARDY, Ella Langley'
-  },
-  {
-    date: '2026-07-17',
-    city: 'Baltimore',
-    state: 'MD',
-    venue: 'M&T Bank Stadium',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 71000,
-    specialGuests: 'Brooks & Dunn, Ella Langley, Gavin Adcock, Jason Scott & The High Heat'
-  },
-  {
-    date: '2026-07-18',
-    city: 'Baltimore',
-    state: 'MD',
-    venue: 'M&T Bank Stadium',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 71000,
-    specialGuests: 'Brooks & Dunn, Ella Langley, Gavin Adcock, Jason Scott & The High Heat'
-  },
-  {
-    date: '2026-07-24',
-    city: 'Ann Arbor',
-    state: 'MI',
-    venue: 'Michigan Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 107000,
-    specialGuests: 'Thomas Rhett, HARDY, Hudson Westbrook, Blake Whiten'
-  },
-  {
-    date: '2026-07-25',
-    city: 'Ann Arbor',
-    state: 'MI',
-    venue: 'Michigan Stadium',
-    price: 85.99,
-    vipPrice: 289.99,
-    ticketsAvailable: 107000,
-    specialGuests: 'Thomas Rhett, HARDY, Hudson Westbrook, Blake Whiten'
-  },
-  {
-    date: '2026-08-01',
-    city: 'Philadelphia',
-    state: 'PA',
-    venue: 'Lincoln Financial Field',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 69000,
-    specialGuests: 'Brooks & Dunn, Ella Langley'
-  },
-  {
-    date: '2026-08-02',
-    city: 'Philadelphia',
-    state: 'PA',
-    venue: 'Lincoln Financial Field',
-    price: 89.99,
-    vipPrice: 299.99,
-    ticketsAvailable: 69000,
-    specialGuests: 'HARDY, Gavin Adcock'
-  }
-];
-
-// Add these bot commands (add after existing commands in your bot.js)
-
-// Command: /tour - Show all tour dates
-bot.command('tour', async (ctx) => {
-  const now = new Date();
-  const upcomingTours = TOUR_DATES_2026.filter(t => new Date(t.date) >= now);
+  const tourId = ctx.match[1];
+  const tour = await pool.query('SELECT * FROM tours WHERE id = $1', [tourId]);
   
-  if (upcomingTours.length === 0) {
-    return ctx.reply('No upcoming tour dates at this time. Check back soon!');
+  if (tour.rows.length === 0) {
+    await ctx.answerCbQuery('Tour not found');
+    return;
   }
   
-  let message = '🎸 *Still The Problem Tour 2026*\n\n';
-  message += '21 Stadium Shows Across America!\n\n';
+  const t = tour.rows[0];
+  const user = await getOrCreateUser(ctx);
+  const discount = MEMBERSHIP_TIERS[user.membership_tier].discount;
   
-  upcomingTours.slice(0, 10).forEach((show, index) => {
-    const date = new Date(show.date);
-    const formatted = date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
-    });
-    
-    message += `📍 *${show.city}, ${show.state}*\n`;
-    message += `📅 ${formatted}\n`;
-    message += `🏟️ ${show.venue}\n`;
-    message += `🎤 ${show.specialGuests}\n`;
-    message += `💵 Tickets from $${show.price}\n`;
-    message += `\n`;
-  });
-  
-  message += '\n🎫 Use /buyticket to purchase tickets!';
-  
-  await ctx.reply(message, { parse_mode: 'Markdown' });
-});
-
-// Command: /nextshow - Show next upcoming show
-bot.command('nextshow', async (ctx) => {
-  const now = new Date();
-  const nextShow = TOUR_DATES_2026.find(t => new Date(t.date) >= now);
-  
-  if (!nextShow) {
-    return ctx.reply('No upcoming shows at this time.');
-  }
-  
-  const date = new Date(nextShow.date);
-  const formatted = date.toLocaleDateString('en-US', { 
-    weekday: 'long',
-    month: 'long', 
-    day: 'numeric', 
-    year: 'numeric' 
-  });
+  await ctx.answerCbQuery();
   
   const message = `
-🎸 *NEXT SHOW*
+🎸 *TOUR DETAILS*
 
-📍 *${nextShow.city}, ${nextShow.state}*
-📅 ${formatted}
-🏟️ ${nextShow.venue}
-👥 Capacity: ${nextShow.ticketsAvailable.toLocaleString()}
+📅 ${new Date(t.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+🕐 Doors: ${t.doors_open || 'TBA'} | Show: ${t.show_start || 'TBA'}
 
-🎤 *Special Guests:*
-${nextShow.specialGuests}
+📍 *${t.venue}*
+${t.venue_address || ''}
+${t.city}, ${t.state} ${t.country}
 
-💰 *Tickets:*
-General Admission: $${nextShow.price}
-VIP Experience: $${nextShow.vipPrice}
+🎫 *Tickets Available:* ${t.tickets_available - t.tickets_sold}
 
-🎫 Ready to go? Use /buyticket to purchase!
-  `;
-  
-  await ctx.reply(message, { parse_mode: 'Markdown' });
-});
+💰 *Pricing:*
+General: $${(t.ticket_price * (1 - discount)).toFixed(2)}${discount > 0 ? ` (${(discount*100)}% member discount!)` : ''}
+VIP: $${(t.vip_price * (1 - discount)).toFixed(2)}${discount > 0 ? ` (${(discount*100)}% member discount!)` : ''}
 
-// Command: /cityshows - Find shows by city
-bot.command('cityshows', async (ctx) => {
-  const cities = [...new Set(TOUR_DATES_2026.map(t => `${t.city}, ${t.state}`))];
-  
-  const keyboard = cities.map(city => [{
-    text: city,
-    callback_data: `city_${city.replace(', ', '_')}`
-  }]);
-  
-  await ctx.reply(
-    '🏙️ Select a city to see all shows:',
-    {
-      reply_markup: {
-        inline_keyboard: keyboard
-      }
-    }
-  );
-});
+${t.description || ''}
+`;
 
-// Handle city selection
-bot.action(/^city_(.+)/, async (ctx) => {
-  const cityState = ctx.match[1].replace('_', ', ');
-  const cityShows = TOUR_DATES_2026.filter(t => `${t.city}, ${t.state}` === cityState);
-  
-  let message = `🎸 *Shows in ${cityState}*\n\n`;
-  
-  cityShows.forEach(show => {
-    const date = new Date(show.date);
-    const formatted = date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
-    });
-    
-    message += `📅 ${formatted} - ${show.venue}\n`;
-    message += `🎤 ${show.specialGuests}\n`;
-    message += `💵 From $${show.price}\n\n`;
-  });
-  
-  await ctx.editMessageText(message, { parse_mode: 'Markdown' });
-});
-
-// Function to seed database with tour data (run once)
-async function seedTourData() {
-  console.log('🌱 Seeding tour data...');
-  
-  for (const tour of TOUR_DATES_2026) {
-    await pool.query(`
-      INSERT INTO tours (city, state, venue, date, tickets_available, ticket_price, vip_price, status, special_guests)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', $8)
-      ON CONFLICT (city, date) DO NOTHING
-    `, [
-      tour.city,
-      tour.state,
-      tour.venue,
-      tour.date,
-      tour.ticketsAvailable,
-      tour.price,
-      tour.vipPrice,
-      tour.specialGuests
-    ]);
-  }
-  
-  console.log('✅ Tour data seeded!');
-}
-
-// Call this once to populate database
-// seedTourData().catch(console.error);
-
-// Export for use in web interface
-module.exports = { TOUR_DATES_2026 };
   await ctx.editMessageText(message, {
     parse_mode: 'Markdown',
     ...Markup.inlineKeyboard([
@@ -1727,6 +1401,41 @@ start()
 
 
 
+// === BEGIN /tour COMMAND (auto-injected) ===
+bot.command('tour', async (ctx) => {
+  try {
+    ctx.reply('🔍 Fetching upcoming tours...');
+    const { data: html } = await axios.get('https://stilltheproblem.vercel.app/');
+    const $ = cheerio.load(html);
+    const tours = [];
+    $('.tour-item').each((i, el) => {
+      const name = $(el).find('h3').text().trim() || 'Unnamed Event';
+      const date = $(el).find('.date').text().trim() || 'Date TBD';
+      const venue = $(el).find('.venue').text().trim() || 'Venue TBD';
+      const ticket_url = $(el).find('a.ticket-link').attr('href') || 'https://stilltheproblem.vercel.app/';
+      tours.push({ name, date, venue, ticket_url });
+    });
+    if (tours.length === 0) return ctx.reply('No upcoming tours found.');
+    tours.forEach(tour => {
+      const message = `🎤 *${tour.name}*\n🗓 ${tour.date}\n🏟 ${tour.venue}`;
+      ctx.replyWithMarkdown(message, Markup.inlineKeyboard([
+        Markup.button.url('🎫 Buy Ticket', tour.ticket_url),
+        Markup.button.callback('ℹ More Info', `tour_info_${tour.name.replace(/\s+/g,'_')}`)
+      ]));
+    });
+  } catch (err) {
+    console.error(err);
+    ctx.reply('❌ Could not fetch tours at this time.');
+  }
+});
 
-
+bot.on('callback_query', async (ctx) => {
+  const data = ctx.callbackQuery.data;
+  if (data.startsWith('tour_info_')) {
+    const tourName = data.replace('tour_info_', '').replace(/_/g,' ');
+    await ctx.answerCbQuery();
+    await ctx.reply(`🎤 ${tourName}`);
+  }
+});
+// === END /tour COMMAND (auto-injected) ===
 
