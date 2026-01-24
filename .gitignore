@@ -1,7 +1,73 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# Logs
 logs/
 *.log
-.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.sql
+*.sqlite
+*.db
 backups/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
 *.bak
+*.backup
+
+# PM2
+.pm2/
+ecosystem.config.js
+
+# Redis
+dump.rdb
+redis.conf
+
+# Build files
+dist/
+build/
+
+# Secrets
+*.pem
+*.key
+*.crt
+secrets/
+credentials/
+
+# Specific backup files
+bot.js.bak
+bot.js.tour-backup
+*-backup-*.tar.gz
+*-snapshot-*
+*_pre_restore_*
+
+# Test files
+test-*.js
+
+# Local scripts (keep deploy scripts for reference)
+start-*.sh
+check-status.sh

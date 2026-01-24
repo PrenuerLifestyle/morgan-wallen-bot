@@ -9,11 +9,13 @@
     "test": "jest",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "db:init": "node scripts/init-db.js",
+    "db:init": "node init-db.js",
     "db:seed": "node scripts/seed-db.js",
     "db:backup": "pg_dump $DATABASE_URL > backups/backup-$(date +%Y%m%d-%H%M%S).sql",
     "deploy:railway": "railway up",
-    "deploy:heroku": "git push heroku main"
+    "deploy:heroku": "git push heroku main",
+    "server": "node server.js",
+    "admin:create": "node create-admin.js"
   },
   "keywords": [
     "telegram-bot",
