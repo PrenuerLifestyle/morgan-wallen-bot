@@ -23,7 +23,43 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
-
+async function initDB() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        telegram_id BIGINT PRIMARY KEY,
+        username TEXT,
+        first_name TEXT,
+        last_name TEXT,
+        is_admin BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS bookings (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT REFERENCES users(telegram_id),
+        booking_type TEXT,
+        date DATE,
+        status TEXT DEFAULT 'pending',
+        amount DECIMAL(10,2),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS tours (
+        id SERIAL PRIMARY KEY,
+        city TEXT,
+        venue TEXT,
+        date DATE,
+        tickets_available INTEGER,
+        special_guests TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('✅ Database initialized');
+  } catch (err) {
+    console.error('❌ Error initializing DB:', err.message);
+  }
+}
 // Email transporter
 const emailTransporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
