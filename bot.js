@@ -1761,7 +1761,34 @@ async function start() {
 }
 
 start()
-
+// Start the bot and server
+async function start() {
+  try {
+    await initDB();
+    await importToursIfNeeded();
+    
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+    
+    // Use webhook in production
+    if (process.env.NODE_ENV === 'production') {
+      app.use(bot.webhookCallback('/webhook'));
+      const domain = process.env.RAILWAY_PUBLIC_DOMAIN || process.env.RAILWAY_STATIC_URL;
+      if (domain) {
+        await bot.telegram.setWebhook(`https://${domain}/webhook`);
+        console.log('✅ Bot started in webhook mode');
+      }
+    } else {
+      await bot.launch();
+      console.log('✅ Bot started in polling mode');
+    }
+  } catch (err) {
+    console.error('❌ Failed to start:', err);
+    process.exit(1);
+  }
+}
 
 
 
