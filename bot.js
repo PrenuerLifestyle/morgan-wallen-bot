@@ -213,7 +213,44 @@ async function initDatabase() {
   `);
   console.log('✅ Database initialized');
 }
-
+// Auto-import tour dates if none exist
+async function importToursIfNeeded() {
+  try {
+    const result = await pool.query('SELECT COUNT(*) FROM tours');
+    const count = parseInt(result.rows[0].count);
+    
+    if (count === 0) {
+      console.log('📅 Importing tour dates...');
+      
+      const tours = [
+        { city: 'Tampa', venue: 'Raymond James Stadium', date: '2026-04-25', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Philadelphia', venue: 'Lincoln Financial Field', date: '2026-05-02', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Chicago', venue: 'Soldier Field', date: '2026-05-09', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Detroit', venue: 'Ford Field', date: '2026-05-16', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Denver', venue: 'Empower Field', date: '2026-05-23', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Seattle', venue: 'Lumen Field', date: '2026-05-30', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'San Francisco', venue: 'Oracle Park', date: '2026-06-06', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Los Angeles', venue: 'SoFi Stadium', date: '2026-06-13', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Phoenix', venue: 'State Farm Stadium', date: '2026-06-20', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Dallas', venue: 'AT&T Stadium', date: '2026-06-27', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' },
+        { city: 'Houston', venue: 'NRG Stadium', date: '2026-07-11', tickets_url: 'https://morganwallen.com', special_guest: 'Luke Grimes' }
+      ];
+      
+      for (const tour of tours) {
+        await pool.query(
+          'INSERT INTO tours (city, venue, date, tickets_url, special_guest) VALUES ($1, $2, $3, $4, $5)',
+          [tour.city, tour.venue, tour.date, tour.tickets_url, tour.special_guest]
+        );
+      }
+      
+      console.log('✅ All tour dates imported!');
+    } else {
+      console.log(`ℹ️ Tour dates already exist (${count} tours)`);
+    }
+  } catch (err) {
+    console.error('❌ Error importing tours:', err);
+  }
+}
 // Helper Functions
 async function getOrCreateUser(ctx) {
   const { id, username, first_name, last_name } = ctx.from;
