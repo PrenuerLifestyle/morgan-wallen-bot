@@ -26,8 +26,10 @@ const pool = new Pool({
 async function initDB() {
   try {
     await pool.query(`
+      -- Users table
       CREATE TABLE IF NOT EXISTS users (
-        telegram_id BIGINT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        telegram_id BIGINT UNIQUE NOT NULL,
         username TEXT,
         first_name TEXT,
         last_name TEXT,
@@ -35,6 +37,7 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
+      -- Bookings table
       CREATE TABLE IF NOT EXISTS bookings (
         id SERIAL PRIMARY KEY,
         user_id BIGINT REFERENCES users(telegram_id),
@@ -45,6 +48,7 @@ async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
+      -- Tours table with all columns
       CREATE TABLE IF NOT EXISTS tours (
         id SERIAL PRIMARY KEY,
         city TEXT,
@@ -52,6 +56,16 @@ async function initDB() {
         date DATE,
         tickets_available INTEGER,
         special_guests TEXT,
+        tickets_url TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Analytics table
+      CREATE TABLE IF NOT EXISTS analytics (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT REFERENCES users(telegram_id),
+        event_type TEXT,
+        event_data JSONB,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
