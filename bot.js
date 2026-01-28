@@ -23,55 +23,36 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
+
 async function initDB() {
   try {
     await pool.query(`
-      -- Users table
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE NOT NULL,
-        username TEXT,
-        first_name TEXT,
-        last_name TEXT,
-        is_admin BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-      
-      -- Bookings table
-      CREATE TABLE IF NOT EXISTS bookings (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT REFERENCES users(telegram_id),
-        booking_type TEXT,
-        date DATE,
-        status TEXT DEFAULT 'pending',
-        amount DECIMAL(10,2),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-      
-      -- Tours table with all columns
       CREATE TABLE IF NOT EXISTS tours (
         id SERIAL PRIMARY KEY,
-        city TEXT,
-        venue TEXT,
-        date DATE,
-        tickets_available INTEGER,
-        special_guests TEXT,
+        city TEXT NOT NULL,
+        venue TEXT NOT NULL,
+        date DATE NOT NULL,
         tickets_url TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        special_guest TEXT
       );
-      
-      -- Analytics table
-      CREATE TABLE IF NOT EXISTS analytics (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT REFERENCES users(telegram_id),
-        event_type TEXT,
-        event_data JSONB,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+
+    await pool.query(`
+      ALTER TABLE analytics 
+      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
     `);
-    console.log('✅ Database initialized');
+    `);
+
+    await pool.query(`
+      ALTER TABLE tours
+      ADD COLUMN IF NOT EXISTS tickets_url TEXT,
+      ADD COLUMN IF NOT EXISTS special_guest TEXT;
+    `);
+
+    await pool.query('SELECT NOW()');
+    console.log('✅ Database initialized & schema verified');
   } catch (err) {
-    console.error('❌ Error initializing DB:', err.message);
+    console.error('❌ Database init failed:', err);
+    throw err;
   }
 }
 // Email transporter
@@ -162,6 +143,11 @@ async function initDatabase() {
       description TEXT,
       created_at TIMESTAMP DEFAULT NOW()
     );
+
+    await pool.query(`
+      ALTER TABLE analytics 
+      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+    `);
 
     CREATE TABLE IF NOT EXISTS ticket_purchases (
       id SERIAL PRIMARY KEY,
