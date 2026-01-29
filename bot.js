@@ -44,7 +44,10 @@ async function initDB() {
     `);
 
     await pool.query('SELECT NOW()');
-    console.log('✅ Database initialized & schema verified');
+  await pool.query(`
+      ALTER TABLE analytics 
+      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+    `);  console.log('✅ Database initialized & schema verified');
   } catch (err) {
     console.error('❌ Database init failed:', err);
     throw err;
