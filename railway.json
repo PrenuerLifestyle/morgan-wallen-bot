@@ -4,7 +4,16 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
+    "runtime": "V2",
+    "numReplicas": 1,
     "startCommand": "node bot.js",
+    "sleepApplication": false,
+    "useLegacyStacker": false,
+    "multiRegionConfig": {
+      "us-west2": {
+        "numReplicas": 1
+      }
+    },
     "restartPolicyType": "NEVER"
   }
 }
