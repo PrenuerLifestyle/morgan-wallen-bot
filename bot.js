@@ -26,11 +26,6 @@ const pool = new Pool({
 
 async function initDB() {
   try {
-    await pool.query(`
-      -- Users table with ALL required columns
-      CREATE TABLE IF NOT EXISTS users (
-async function initDB() {
-  try {
     // FORCE RESET - Remove after first deploy
     console.log('🗑️ Resetting database schema...');
     await pool.query('DROP TABLE IF EXISTS analytics CASCADE');
@@ -1841,7 +1836,6 @@ bot.catch((err, ctx) => {
 // Initialize and start
   try {
     await initDatabase();
-    await bot.launch();
     console.log('✅ Bot started successfully');
     
     const PORT = process.env.PORT || 3000;
@@ -1849,45 +1843,46 @@ bot.catch((err, ctx) => {
       console.log(`✅ Server running on port ${PORT}`);
     });
     
-    process.once('SIGINT', () => bot.stop('SIGINT'));
-    process.once('SIGTERM', () => bot.stop('SIGTERM'));
-    
+xx    
   } catch (error) {
     console.error('❌ Failed to start:', error);
     process.exit(1);
   }
 }
 
-start()
-// Start the bot and server
 async function start() {
   try {
     await initDB();
     await importToursIfNeeded();
-    
+
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
+
+    app.use(bot.webhookCallback('/telegram'));
+
+    app.listen(PORT, async () => {
       console.log(`✅ Server running on port ${PORT}`);
-    });
-    
-    // Use webhook in production
-    if (process.env.NODE_ENV === 'production') {
-      app.use(bot.webhookCallback('/webhook'));
-      const domain = process.env.RAILWAY_PUBLIC_DOMAIN || process.env.RAILWAY_STATIC_URL;
-      if (domain) {
-        await bot.telegram.setWebhook(`https://${domain}/webhook`);
-        console.log('✅ Bot started in webhook mode');
+
+      const domain =
+        process.env.RAILWAY_PUBLIC_DOMAIN ||
+        process.env.RAILWAY_STATIC_URL;
+
+      if (!domain) {
+        throw new Error('❌ Railway domain not found');
       }
-    } else {
-      await bot.launch();
-      console.log('✅ Bot started in polling mode');
-    }
+
+      const webhookURL = `https://${domain}/telegram`;
+
+      await bot.telegram.setWebhook(webhookURL);
+      console.log('✅ Telegram webhook set:', webhookURL);
+    });
+
   } catch (err) {
-    console.error('❌ Failed to start:', err);
+    console.error('❌ Startup failed:', err);
     process.exit(1);
   }
 }
 
+start();
 
 
 
