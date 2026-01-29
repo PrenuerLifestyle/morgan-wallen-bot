@@ -83,7 +83,18 @@ async function initDB() {
   } catch (err) {
     console.error('❌ Error initializing DB:', err.message);
   }
-}
+}(async () => {
+  try {
+    // Add missing column
+    await pool.query(`
+      ALTER TABLE users 
+      ADD COLUMN IF NOT EXISTS last_active TIMESTAMP DEFAULT NOW()
+    `);
+    console.log('✅ Database migration complete');
+  } catch (err) {
+    console.error('Migration error:', err);
+  }
+})();
 
 
 // Email transporter
