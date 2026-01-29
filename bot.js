@@ -335,6 +335,8 @@ async function importToursIfNeeded() {
 // Helper Functions
 async function getOrCreateUser(ctx) {
   const user = ctx.from;
+async function getOrCreateUser(ctx) {
+  const user = ctx.from;
   
   const result = await pool.query(
     `INSERT INTO users (telegram_id, username, first_name, last_active)
@@ -347,18 +349,12 @@ async function getOrCreateUser(ctx) {
      RETURNING *`,
     [user.id, user.username, user.first_name]
   );
-  
+
+  // Track analytics (INSIDE the function)
+  await trackEvent('user_registered', result.rows[0].telegram_id);
+
   return result.rows[0];
 }
-    // Track analytics
-    await trackEvent('user_registered', result.rows[0].id);
-    
-    return result.rows[0];
-  }
-  
-  // Update last active
-  await pool.query('UPDATE users SET last_active = NOW() WHERE telegram_id = $1', [user.rows[0].id]);
-  
   return user.rows[0];
 }
 
