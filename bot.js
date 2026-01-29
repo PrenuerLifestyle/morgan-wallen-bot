@@ -27,57 +27,6 @@ const pool = new Pool({
 async function initDB() {
   try {
     // FORCE RESET - Remove after first deploy
-    console.log('🗑️ Resetting database schema...');
-    await pool.query('DROP TABLE IF EXISTS analytics CASCADE');
-    await pool.query('DROP TABLE IF EXISTS bookings CASCADE');
-    await pool.query('DROP TABLE IF EXISTS tours CASCADE');
-    await pool.query('DROP TABLE IF EXISTS users CASCADE');
-    console.log('✅ Old tables dropped');
-    
-    // Now create fresh tables
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE NOT NULL,        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE NOT NULL,
-        username TEXT,
-        first_name TEXT,
-        last_name TEXT,
-        is_admin BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Tours table with ALL required columns
-      CREATE TABLE IF NOT EXISTS tours (
-        id SERIAL PRIMARY KEY,
-        city TEXT,
-        venue TEXT,
-        date DATE,
-        tickets_available INTEGER,
-        special_guests TEXT,
-        tickets_url TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Bookings table
-      CREATE TABLE IF NOT EXISTS bookings (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT REFERENCES users(telegram_id),
-        booking_type TEXT,
-        date DATE,
-        status TEXT DEFAULT 'pending',
-        amount DECIMAL(10,2),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Analytics table
-      CREATE TABLE IF NOT EXISTS analytics (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT,
-        event_type TEXT,
-        event_data JSONB,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
 
       -- Add missing columns to existing tables
       DO $$
@@ -1862,20 +1811,20 @@ async function start() {
     app.listen(PORT, async () => {
       console.log(`✅ Server running on port ${PORT}`);
 
-      const domain =
-        process.env.RAILWAY_PUBLIC_DOMAIN ||
-        process.env.RAILWAY_STATIC_URL;
-
-      if (!domain) {
-        throw new Error('❌ Railway domain not found');
-      }
-
-      const webhookURL = `https://${domain}/telegram`;
-
-      await bot.telegram.setWebhook(webhookURL);
-      console.log('✅ Telegram webhook set:', webhookURL);
-    });
-
+//       const domain =
+//         process.env.RAILWAY_PUBLIC_DOMAIN ||
+//         process.env.RAILWAY_STATIC_URL;
+// 
+//       if (!domain) {
+//     // Railway domain check removed
+//       }
+// 
+//       const webhookURL = `https://${domain}/telegram`;
+// 
+//       await bot.telegram.setWebhook(webhookURL);
+//       console.log('✅ Telegram webhook set:', webhookURL);
+//     });
+// 
   } catch (err) {
     console.error('❌ Startup failed:', err);
     process.exit(1);
