@@ -1817,10 +1817,6 @@ app.get('/', (req, res) => {
 
 // Error handling
 bot.catch((err, ctx) => {
-  console.error('Bot error:', err);
-  ctx.reply('❌ An error occurred. Our team has been notified.');
-});
-
 // Initialize and start
 async function start() {
   try {
