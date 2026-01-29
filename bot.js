@@ -337,25 +337,34 @@ async function getOrCreateUser(ctx) {
   const user = ctx.from;
 async function getOrCreateUser(ctx) {
   const user = ctx.from;
+  console.log("getOrCreateUser called for user:", user?.id);
 
-  const result = await pool.query(
-    `INSERT INTO users (telegram_id, username, first_name, last_active)
-     VALUES ($1, $2, $3, NOW())
-     ON CONFLICT (telegram_id)
-     DO UPDATE SET
-       last_active = NOW(),
-       username = $2,
-       first_name = $3
-     RETURNING *`,
-    [user.id, user.username, user.first_name]
-  );
+  try {
+    const result = await pool.query(
+      `INSERT INTO users (telegram_id, username, first_name, last_active)
+       VALUES ($1, $2, $3, NOW())
+       ON CONFLICT (telegram_id)
+       DO UPDATE SET
+         last_active = NOW(),
+         username = $2,
+         first_name = $3
+       RETURNING *`,
+      [user.id, user.username, user.first_name]
+    );
 
-  // Track analytics only if user was created
-  if (result?.rows?.[0]) {
-    await trackEvent("user_registered", result.rows[0].telegram_id);
+    console.log("Query result rows:", result?.rows);
+
+    if (result?.rows?.[0]) {
+      await trackEvent("user_registered", result.rows[0].telegram_id).catch(err => 
+        console.error("trackEvent failed:", err)
+      );
+    }
+
+    return result?.rows?.[0];
+  } catch (error) {
+    console.error("getOrCreateUser error:", error);
+    throw error;
   }
-
-  return result.rows[0];
 }
     [eventType, userId, JSON.stringify(metadata)]
   );
