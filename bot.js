@@ -355,7 +355,7 @@ async function getOrCreateUser(ctx) {
     console.log("Query result rows:", result?.rows);
 
     if (result?.rows?.[0]) {
-      await trackEvent("user_registered", result.rows[0].telegram_id).catch(err => 
+      await trackEvent("user_registered", result.rows[0].telegram_id).catch(err =>
         console.error("trackEvent failed:", err)
       );
     }
@@ -365,9 +365,6 @@ async function getOrCreateUser(ctx) {
     console.error("getOrCreateUser error:", error);
     throw error;
   }
-}
-    [eventType, userId, JSON.stringify(metadata)]
-  );
 }
 
 async function sendEmail(to, subject, html) {
