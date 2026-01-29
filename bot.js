@@ -358,7 +358,7 @@ async function getOrCreateUser(ctx) {
   }
   
   // Update last active
-  await pool.query('UPDATE users SET last_active = NOW() WHERE id = $1', [user.rows[0].id]);
+  await pool.query('UPDATE users SET last_active = NOW() WHERE telegram_id = $1', [user.rows[0].id]);
   
   return user.rows[0];
 }
@@ -1178,7 +1178,7 @@ bot.action(/buy_ticket_(\d+)_(general|vip)/, async (ctx) => {
   const [, tourId, ticketType] = ctx.match;
   const user = await getOrCreateUser(ctx);
   
-  const tour = await pool.query('SELECT * FROM tours WHERE id = $1', [tourId]);
+  const tour = await pool.query('SELECT * FROM tours WHERE telegram_id = $1', [tourId]);
   if (tour.rows.length === 0) {
     await ctx.answerCbQuery('Tour not found');
     return;
@@ -1337,7 +1337,7 @@ bot.action(/join_(\d+)/, async (ctx) => {
   const user = await getOrCreateUser(ctx);
   
   const booking = await pool.query(
-    'SELECT * FROM bookings WHERE id = $1 AND user_id = $2',
+    'SELECT * FROM bookings WHERE telegram_id = $1 AND user_id = $2',
     [bookingId, user.id]
   );
   
@@ -1491,7 +1491,7 @@ bot.action(/approve_(\d+)/, async (ctx) => {
          zoom_meeting_id = $2,
          zoom_meeting_url = $3,
          updated_at = NOW()
-     WHERE id = $4`,
+     WHERE telegram_id = $4`,
     [calendarEventId, zoomData?.id, zoomData?.join_url, bookingId]
   );
   
@@ -1534,7 +1534,7 @@ bot.action(/reject_(\d+)/, async (ctx) => {
   const bookingId = ctx.match[1];
   
   await pool.query(
-    'UPDATE bookings SET status = $1, updated_at = NOW() WHERE id = $2',
+    'UPDATE bookings SET status = $1, updated_at = NOW() WHERE telegram_id = $2',
     ['rejected', bookingId]
   );
   
@@ -1708,7 +1708,7 @@ cron.schedule('0 9 * * *', async () => {
       { parse_mode: 'Markdown' }
     );
     
-    await pool.query('UPDATE bookings SET reminder_sent = true WHERE id = $1', [booking.id]);
+    await pool.query('UPDATE bookings SET reminder_sent = true WHERE telegram_id = $1', [booking.id]);
   }
   
   console.log(`✅ Sent ${bookings.rows.length} booking reminders`);
@@ -1722,7 +1722,7 @@ emailQueue.process(async (job) => {
 
 notificationQueue.process(async (job) => {
   const { userId, message } = job.data;
-  const user = await pool.query('SELECT telegram_id FROM users WHERE id = $1', [userId]);
+  const user = await pool.query('SELECT telegram_id FROM users WHERE telegram_id = $1', [userId]);
   if (user.rows.length > 0) {
     await bot.telegram.sendMessage(user.rows[0].telegram_id, message, { parse_mode: 'Markdown' });
   }
@@ -1753,7 +1753,7 @@ app.post('/webhook/stripe', async (req, res) => {
         await pool.query(
           `UPDATE users 
            SET membership_tier = $1, membership_expires = $2, stripe_customer_id = $3 
-           WHERE id = $4`,
+           WHERE telegram_id = $4`,
           [session.metadata.tier, expires, session.customer, userId]
         );
         
@@ -1772,7 +1772,7 @@ app.post('/webhook/stripe', async (req, res) => {
         );
         
         await pool.query(
-          'UPDATE tours SET tickets_sold = tickets_sold + 1 WHERE id = $1',
+          'UPDATE tours SET tickets_sold = tickets_sold + 1 WHERE telegram_id = $1',
           [session.metadata.tour_id]
         );
         
