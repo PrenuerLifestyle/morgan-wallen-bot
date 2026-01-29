@@ -27,65 +27,29 @@ const pool = new Pool({
 async function initDB() {
   try {
     await pool.query(`
-      -- Users table with ALL required columns
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE NOT NULL,
-        username TEXT,
-        first_name TEXT,
-        last_name TEXT,
-        is_admin BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Tours table with ALL required columns
       CREATE TABLE IF NOT EXISTS tours (
         id SERIAL PRIMARY KEY,
-        city TEXT,
-        venue TEXT,
-        date DATE,
-        tickets_available INTEGER,
-        special_guests TEXT,
+        city TEXT NOT NULL,
+        venue TEXT NOT NULL,
+        date DATE NOT NULL,
         tickets_url TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        special_guest TEXT
       );
-
-      -- Bookings table
-      CREATE TABLE IF NOT EXISTS bookings (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT REFERENCES users(telegram_id),
-        booking_type TEXT,
-        date DATE,
-        status TEXT DEFAULT 'pending',
-        amount DECIMAL(10,2),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Analytics table
-      CREATE TABLE IF NOT EXISTS analytics (
-        id SERIAL PRIMARY KEY,
-        user_id BIGINT,
-        event_type TEXT,
-        event_data JSONB,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      -- Add missing columns to existing tables
-      DO $$
-      BEGIN
-        ALTER TABLE users ADD COLUMN IF NOT EXISTS id SERIAL;
-        ALTER TABLE tours ADD COLUMN IF NOT EXISTS tickets_url TEXT;
-      EXCEPTION WHEN OTHERS THEN
-        NULL;
-      END $$;
     `);
-       console.log('✅ Database initialized & schema verified');
+
+    await pool.query(`
+      ALTER TABLE tours
+      ADD COLUMN IF NOT EXISTS tickets_url TEXT,
+      ADD COLUMN IF NOT EXISTS special_guest TEXT;
+    `);
+
+    await pool.query('SELECT NOW()');
+    console.log('✅ Database initialized & schema verified');
   } catch (err) {
-    console.error('❌ Error initializing DB:', err.message);
+    console.error('❌ Database init failed:', err);
+    throw err;
   }
 }
-
-
 // Email transporter
 const emailTransporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -107,7 +71,7 @@ const oauth2Client = new google.auth.OAuth2(
 oauth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN
 });
-const initDB = async
+
 const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
 // Job Queue for async tasks
@@ -273,16 +237,7 @@ async function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_tours_date ON tours(date);
     CREATE INDEX IF NOT EXISTS idx_analytics_type ON analytics(event_type);
   `);
-// Add missing columns to existing tables
-  try {
-    await pool.query(`
-      ALTER TABLE analytics 
-      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
-    `);
-    console.log('✅ Database schema updated');
-  } catch (err) {
-    console.log('ℹ️ Schema already up to date');
-  }  console.log('✅ Database initialized');
+  console.log('✅ Database initialized');
 }
 // Auto-import tour dates if none exist
 async function importToursIfNeeded() {
@@ -324,22 +279,17 @@ async function importToursIfNeeded() {
 }
 // Helper Functions
 async function getOrCreateUser(ctx) {
-  const user = ctx.from;
+  const { id, username, first_name, last_name } = ctx.from;
   
-  const result = await pool.query(
-    `INSERT INTO users (telegram_id, username, first_name, last_active)
-     VALUES ($1, $2, $3, NOW())
-     ON CONFLICT (telegram_id) 
-     DO UPDATE SET 
-       last_active = NOW(),
-       username = $2,
-       first_name = $3
-     RETURNING *`,
-    [user.id, user.username, user.first_name]
-  );
+  let user = await pool.query('SELECT * FROM users WHERE telegram_id = $1', [id]);
   
-  return result.rows[0];
-}
+  if (user.rows.length === 0) {
+    const result = await pool.query(
+      `INSERT INTO users (telegram_id, username, first_name, last_name) 
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [id, username, first_name, last_name]
+    );
+    
     // Track analytics
     await trackEvent('user_registered', result.rows[0].id);
     
