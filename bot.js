@@ -29,7 +29,21 @@ async function initDB() {
     await pool.query(`
       -- Users table with ALL required columns
       CREATE TABLE IF NOT EXISTS users (
+async function initDB() {
+  try {
+    // FORCE RESET - Remove after first deploy
+    console.log('🗑️ Resetting database schema...');
+    await pool.query('DROP TABLE IF EXISTS analytics CASCADE');
+    await pool.query('DROP TABLE IF EXISTS bookings CASCADE');
+    await pool.query('DROP TABLE IF EXISTS tours CASCADE');
+    await pool.query('DROP TABLE IF EXISTS users CASCADE');
+    console.log('✅ Old tables dropped');
+    
+    // Now create fresh tables
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
+        telegram_id BIGINT UNIQUE NOT NULL,        id SERIAL PRIMARY KEY,
         telegram_id BIGINT UNIQUE NOT NULL,
         username TEXT,
         first_name TEXT,
