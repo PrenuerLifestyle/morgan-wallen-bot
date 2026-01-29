@@ -337,12 +337,12 @@ async function getOrCreateUser(ctx) {
   const user = ctx.from;
 async function getOrCreateUser(ctx) {
   const user = ctx.from;
-  
+
   const result = await pool.query(
     `INSERT INTO users (telegram_id, username, first_name, last_active)
      VALUES ($1, $2, $3, NOW())
-     ON CONFLICT (telegram_id) 
-     DO UPDATE SET 
+     ON CONFLICT (telegram_id)
+     DO UPDATE SET
        last_active = NOW(),
        username = $2,
        first_name = $3
@@ -350,25 +350,13 @@ async function getOrCreateUser(ctx) {
     [user.id, user.username, user.first_name]
   );
 
-  // Track analytics (INSIDE the function)
-  await trackEvent('user_registered', result.rows[0].telegram_id);
+  // Track analytics only if user was created
+  if (result?.rows?.[0]) {
+    await trackEvent("user_registered", result.rows[0].telegram_id);
+  }
 
   return result.rows[0];
 }
-  // Track analytics only if user was created
-  if (result.rows && result.rows[0]) {
-    await trackEvent('user_registered', result.rows[0].telegram_id);
-  }
-}
-
-async function isAdmin(telegramId) {
-  const result = await pool.query('SELECT * FROM admins WHERE telegram_id = $1', [telegramId]);
-  return result.rows.length > 0;
-}
-
-async function trackEvent(eventType, userId, metadata = {}) {
-  await pool.query(
-    'INSERT INTO analytics (event_type, user_id, metadata) VALUES ($1, $2, $3)',
     [eventType, userId, JSON.stringify(metadata)]
   );
 }
