@@ -35,11 +35,6 @@ async function initDB() {
         tickets_url TEXT,
         special_guest TEXT
       );
-
-    await pool.query(`
-      ALTER TABLE analytics 
-      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
-    `);
     `);
 
     await pool.query(`
@@ -144,11 +139,6 @@ async function initDatabase() {
       created_at TIMESTAMP DEFAULT NOW()
     );
 
-    await pool.query(`
-      ALTER TABLE analytics 
-      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
-    `);
-
     CREATE TABLE IF NOT EXISTS ticket_purchases (
       id SERIAL PRIMARY KEY,
       user_id INTEGER REFERENCES users(id),
@@ -247,7 +237,16 @@ async function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_tours_date ON tours(date);
     CREATE INDEX IF NOT EXISTS idx_analytics_type ON analytics(event_type);
   `);
-  console.log('✅ Database initialized');
+// Add missing columns to existing tables
+  try {
+    await pool.query(`
+      ALTER TABLE analytics 
+      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
+    `);
+    console.log('✅ Database schema updated');
+  } catch (err) {
+    console.log('ℹ️ Schema already up to date');
+  }  console.log('✅ Database initialized');
 }
 // Auto-import tour dates if none exist
 async function importToursIfNeeded() {
