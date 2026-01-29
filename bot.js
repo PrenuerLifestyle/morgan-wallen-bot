@@ -24,26 +24,6 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-async function initDB() {
-  try {
-    // FORCE RESET - Remove after first deploy
-
-      -- Add missing columns to existing tables
-      DO $$
-      BEGIN
-        ALTER TABLE users ADD COLUMN IF NOT EXISTS id SERIAL;
-        ALTER TABLE tours ADD COLUMN IF NOT EXISTS tickets_url TEXT;
-      EXCEPTION WHEN OTHERS THEN
-        NULL;
-      END $$;
-    `);
-       console.log('✅ Database initialized & schema verified');
-  } catch (err) {
-    console.error('❌ Error initializing DB:', err.message);
-  }
-}(async () => {
-  try {
-    // Add missing column
     await pool.query(`
       ALTER TABLE users 
       ADD COLUMN IF NOT EXISTS last_active TIMESTAMP DEFAULT NOW()
