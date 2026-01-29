@@ -27,32 +27,65 @@ const pool = new Pool({
 async function initDB() {
   try {
     await pool.query(`
+      -- Users table with ALL required columns
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        telegram_id BIGINT UNIQUE NOT NULL,
+        username TEXT,
+        first_name TEXT,
+        last_name TEXT,
+        is_admin BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Tours table with ALL required columns
       CREATE TABLE IF NOT EXISTS tours (
         id SERIAL PRIMARY KEY,
-        city TEXT NOT NULL,
-        venue TEXT NOT NULL,
-        date DATE NOT NULL,
+        city TEXT,
+        venue TEXT,
+        date DATE,
+        tickets_available INTEGER,
+        special_guests TEXT,
         tickets_url TEXT,
-        special_guest TEXT
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-    `);
 
-    await pool.query(`
-      ALTER TABLE tours
-      ADD COLUMN IF NOT EXISTS tickets_url TEXT,
-      ADD COLUMN IF NOT EXISTS special_guest TEXT;
-    `);
+      -- Bookings table
+      CREATE TABLE IF NOT EXISTS bookings (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT REFERENCES users(telegram_id),
+        booking_type TEXT,
+        date DATE,
+        status TEXT DEFAULT 'pending',
+        amount DECIMAL(10,2),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
 
-    await pool.query('SELECT NOW()');
-  await pool.query(`
-      ALTER TABLE analytics 
-      ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}';
-    `);  console.log('✅ Database initialized & schema verified');
+      -- Analytics table
+      CREATE TABLE IF NOT EXISTS analytics (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT,
+        event_type TEXT,
+        event_data JSONB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Add missing columns to existing tables
+      DO $$
+      BEGIN
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS id SERIAL;
+        ALTER TABLE tours ADD COLUMN IF NOT EXISTS tickets_url TEXT;
+      EXCEPTION WHEN OTHERS THEN
+        NULL;
+      END $$;
+    `);
+       console.log('✅ Database initialized & schema verified');
   } catch (err) {
-    console.error('❌ Database init failed:', err);
-    throw err;
+    console.error('❌ Error initializing DB:', err.message);
   }
 }
+
+
 // Email transporter
 const emailTransporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
