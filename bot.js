@@ -355,7 +355,10 @@ async function getOrCreateUser(ctx) {
 
   return result.rows[0];
 }
-  return user.rows[0];
+  // Track analytics only if user was created
+  if (result.rows && result.rows[0]) {
+    await trackEvent('user_registered', result.rows[0].telegram_id);
+  }
 }
 
 async function isAdmin(telegramId) {
@@ -1817,8 +1820,17 @@ app.get('/', (req, res) => {
 
 // Error handling
 bot.catch((err, ctx) => {
+  console.error("========================");
+  console.error("Bot error occurred:");
+  console.error("Error message:", err.message);
+  console.error("Error stack:", err.stack);
+  console.error("Update type:", ctx?.updateType);
+  console.error("User:", ctx?.from?.id, ctx?.from?.username);
+  console.error("========================");
+  ctx.reply("❌ An error occurred. Our team has been notified.");
+});
+
 // Initialize and start
-async function start() {
   try {
     await initDatabase();
     await bot.launch();
