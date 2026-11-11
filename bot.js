@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf'); // Only once
 const cheerio = require('cheerio');               // Only once
 const axios = require('axios');                   // Only once
@@ -10,7 +11,7 @@ const cron = require('node-cron');
 const Queue = require('bull');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
+
 
 // Initialize
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -261,8 +262,6 @@ async function importToursIfNeeded() {
   }
 }
 // Helper Functions
-async function getOrCreateUser(ctx) {
-  const user = ctx.from;
 async function getOrCreateUser(ctx) {
   const user = ctx.from;
   console.log("getOrCreateUser called for user:", user?.id);
@@ -1082,15 +1081,6 @@ async function seedTourData() {
 // seedTourData().catch(console.error);
 
 // Export for use in web interface
-module.exports = { TOUR_DATES_2026 };
-  await ctx.editMessageText(message, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('🎫 Buy General', `buy_ticket_${tourId}_general`)],
-      [Markup.button.callback('⭐ Buy VIP', `buy_ticket_${tourId}_vip`)],
-      [Markup.button.callback('🔙 Back to Tours', 'back_to_tours')]
-    ])
-  });
 });
 
 // Ticket purchase
@@ -1752,54 +1742,28 @@ bot.catch((err, ctx) => {
   ctx.reply("❌ An error occurred. Our team has been notified.");
 });
 
-// Initialize and start
-  try {
-    await initDatabase();
-    console.log('✅ Bot started successfully');
-    
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`✅ Server running on port ${PORT}`);
-    });
-    
-xx    
-  } catch (error) {
-    console.error('❌ Failed to start:', error);
-    process.exit(1);
-  }
-}
-
+// Production startup: Render Web Service + Telegram long polling
 async function start() {
   try {
-    await initDB();
+    await initDatabase();
     await importToursIfNeeded();
 
     const PORT = process.env.PORT || 3000;
 
-    app.use(bot.webhookCallback('/telegram'));
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`✅ HTTP server listening on port ${PORT}`);
+    });
 
-    app.listen(PORT, async () => {
-      console.log(`✅ Server running on port ${PORT}`);
-
-//       const domain =
-//         process.env.RAILWAY_PUBLIC_DOMAIN ||
-//         process.env.RAILWAY_STATIC_URL;
-// 
-//       if (!domain) {
-//     // Railway domain check removed
-//       }
-// 
-//       const webhookURL = `https://${domain}/telegram`;
-// 
-//       await bot.telegram.setWebhook(webhookURL);
-//       console.log('✅ Telegram webhook set:', webhookURL);
-//     });
-// 
-  } catch (err) {
-    console.error('❌ Startup failed:', err);
+    await bot.launch();
+    console.log("✅ Telegram bot polling started");
+  } catch (error) {
+    console.error("❌ Startup failed:", error);
     process.exit(1);
   }
 }
+
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 start();
 
