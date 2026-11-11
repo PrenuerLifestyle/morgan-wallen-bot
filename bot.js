@@ -281,11 +281,11 @@ async function getOrCreateUser(ctx) {
 
     console.log("Query result rows:", result?.rows);
 
-    if (result?.rows?.[0]) {
-      await trackEvent("user_registered", result.rows[0].telegram_id).catch(err =>
-        console.error("trackEvent failed:", err)
-      );
-    }
+      if (result?.rows?.[0] && typeof trackEvent === "function") {
+        await Promise.resolve(
+          trackEvent("user_registered", result.rows[0].telegram_id)
+        ).catch(err => console.error("trackEvent failed:", err));
+      }
 
     return result?.rows?.[0];
   } catch (error) {
