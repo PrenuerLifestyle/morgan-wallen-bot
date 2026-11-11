@@ -25,6 +25,33 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
+// Central analytics tracking helper
+async function trackEvent(eventType, userIdentifier, metadata = {}) {
+  try {
+    let userId = null;
+
+    if (userIdentifier !== undefined && userIdentifier !== null) {
+      const result = await pool.query(
+        `SELECT id FROM users
+         WHERE id::text = $1 OR telegram_id::text = $1
+         LIMIT 1`,
+        [String(userIdentifier)]
+      );
+
+      userId = result.rows[0]?.id ?? null;
+    }
+
+    await pool.query(
+      `INSERT INTO analytics (event_type, user_id, metadata)
+       VALUES ($1, $2, $3::jsonb)`,
+      [eventType, userId, JSON.stringify(metadata || {})]
+    );
+  } catch (error) {
+    console.error("Analytics tracking failed:", error.message);
+  }
+}
+
+
 
 // Email transporter
 const emailTransporter = nodemailer.createTransport({
